@@ -10,8 +10,8 @@ const app = Fastify({
 });
 
 const main = async () => {
-  app.addHook('preHandler', (request, reply, done) => {
-    if (request.headers.origin) reply.header('access-control-allow-origin', request.headers.origin);
+  await app.addHook('onRequest', (request, reply, done) => {
+    reply.raw.setHeader('access-control-allow-origin', request.headers.origin ?? '*');
     done();
   });
 
@@ -47,11 +47,9 @@ const main = async () => {
         `data: ${JSON.stringify(data)}\n\n`
       );
     
-    reply.headers({
-      'content-type': 'text/event-stream; charset=utf-8',
-      'cache-control': 'no-cache'
-    });
-  
+    reply.raw.setHeader('content-type', 'text/event-stream');
+    reply.raw.setHeader('cache-control', 'no-cache');
+
     const sendUpdate = () => write('update', serverCache.get(serverIndex) ?? []);
     const timer = setInterval(sendUpdate, timeout);
     
