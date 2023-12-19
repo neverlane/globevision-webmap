@@ -6,76 +6,85 @@ import { serversList } from './list';
 import { serverCache } from './cache';
 
 const app = Fastify({
-  logger: true
+  logger: true,
 });
 
-app.get('/servers/:index', {
-  schema: {
-    params: {
-      type: 'object',
-      properties: {
-        index: {
-          type: 'number'
+const main = async () => {
+  app.addHook('preHandler', (request, reply, done) => {
+    if (request.headers.origin) reply.header('access-control-allow-origin', request.headers.origin);
+    done();
+  });
+
+  app.get('/servers/:index', {
+    schema: {
+      params: {
+        type: 'object',
+        properties: {
+          index: {
+            type: 'number'
+          }
         }
-      }
-    },
-    querystring: {
-      type: 'object',
-      properties: {
-        timeout: {
-          type: 'number'
+      },
+      querystring: {
+        type: 'object',
+        properties: {
+          timeout: {
+            type: 'number'
+          }
         }
       }
     }
-  }
-}, async (req, reply) => {
-  // eslint-disable-next-line @typescript-eslint/ban-ts-comment
-  // @ts-ignore
-  const serverIndex = <number> req.params.index;
-  // eslint-disable-next-line @typescript-eslint/ban-ts-comment
-  // @ts-ignore
-  const timeout = Math.min(Math.max(req.query.timeout ?? 0, 1000), 10000);
-  const write = (type: string, data: unknown) =>
-    reply.raw.write(
-      `event: ${type}\n` +
-      `data: ${JSON.stringify(data)}\n\n`
-    );
+  }, async (req, reply) => {
+    // eslint-disable-next-line @typescript-eslint/ban-ts-comment
+    // @ts-ignore
+    const serverIndex = <number> req.params.index;
+    // eslint-disable-next-line @typescript-eslint/ban-ts-comment
+    // @ts-ignore
+    const timeout = Math.min(Math.max(req.query.timeout ?? 0, 1000), 10000);
+    const write = (type: string, data: unknown) =>
+      reply.raw.write(
+        `event: ${type}\n` +
+        `data: ${JSON.stringify(data)}\n\n`
+      );
+    
+    reply.headers({
+      'content-type': 'text/event-stream; charset=utf-8',
+      'cache-control': 'no-cache'
+    });
   
-  reply.raw.writeHead(200, {
-    'Content-Type': 'text/event-stream; charset=utf-8',
-    'Cache-Control': 'no-cache'
-  });
-
-  const sendUpdate = () => write('update', serverCache.get(serverIndex) ?? []);
-  const timer = setInterval(sendUpdate, timeout);
+    const sendUpdate = () => write('update', serverCache.get(serverIndex) ?? []);
+    const timer = setInterval(sendUpdate, timeout);
+    
+    const onClose = () => {
+      clearInterval(timer);
+      req.socket.removeListener('close', onClose);
+    };
+    req.socket.addListener('close', onClose);
   
-  const onClose = () => {
-    clearInterval(timer);
-    req.socket.removeListener('close', onClose);
-  };
-  req.socket.addListener('close', onClose);
-
-  write('notice', {message: 'connected!'});
-  sendUpdate();
-});
-
-app.get('/servers', async (req, reply) => {
-  reply.send({
-    ok: true,
-    result: serversList
+    write('notice', {message: 'connected!'});
+    sendUpdate();
   });
-});
-
-app.setErrorHandler((error, request, reply) => {
-  reply.status(error.statusCode ?? 500).send({
-    ok: false,
-    error: {
-      code: error.code,
-      message: error.message
-    }
+  
+  app.get('/servers', async (req, reply) => {
+    reply.send({
+      ok: true,
+      result: serversList
+    });
   });
-});
+  
+  app.setErrorHandler((error, request, reply) => {
+    reply.status(error.statusCode ?? 500).send({
+      ok: false,
+      error: {
+        code: error.code,
+        message: error.message
+      }
+    });
+  });
+  
+  app.listen({
+    port: PORT
+  });
+};
 
-app.listen({
-  port: PORT
-});
+main();
