@@ -23,6 +23,8 @@ export interface IPlayer {
   color: number;
 }
 
+const SOCKET_PACKET_TIMEOUT = 100;
+
 export const createSocketClient = (index: number) => {
   const socket = createSocket('udp4');
   const data = new SmartBuffer().writeUInt16LE(2).writeUInt8(1).writeUInt8(index).toBuffer();
@@ -68,7 +70,7 @@ export const createSocketClient = (index: number) => {
     serverCache.set(index, players);
   });
   socket.on('connect', () => {
-    setInterval(sendPacket, 500);
+    setInterval(sendPacket, SOCKET_PACKET_TIMEOUT);
   });
   socket.connect(GLOBE_VISION_PORT, GLOBE_VISION_IP);
   return { socket };

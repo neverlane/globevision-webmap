@@ -40,7 +40,7 @@ const main = async () => {
     const serverIndex = <number> req.params.index;
     // eslint-disable-next-line @typescript-eslint/ban-ts-comment
     // @ts-ignore
-    const timeout = Math.min(Math.max(req.query.timeout ?? 0, 1000), 10000);
+    const timeout = Math.min(Math.max(req.query.timeout ?? 0, 300), 10000);
     const write = (type: string, data: unknown) =>
       reply.raw.write(
         `event: ${type}\n` +
