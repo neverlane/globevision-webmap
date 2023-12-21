@@ -3,15 +3,17 @@ import { useDebouncedValue } from '@mantine/hooks';
 import { useUnit } from 'effector-react';
 import { useMemo, useState } from 'react';
 
-import { $players, IPlayer } from '~/shared';
+import { $players } from '~/shared';
 
 export const PlayersList = () => {
   const players = useUnit($players);
   const colorScheme = useComputedColorScheme('dark');
   
   const [search, setSearch] = useState('');
-  const [showPlayer, setShowPlayer] = useState<IPlayer | null>(null);
+  const [showPlayerNickname, setShowPlayerNickname] = useState<string | null>(null);
   const [debouncedSearch] = useDebouncedValue(search, 300);
+
+  const showPlayerData = useMemo(() => (players.find((player) => player.nickname === showPlayerNickname)), [players, showPlayerNickname]);
 
   const playersRows = useMemo(() =>
     players.filter(player => player.nickname.toLowerCase().includes(debouncedSearch.toLowerCase()) || player.id.toString().includes(debouncedSearch)).map((player) => (
@@ -23,7 +25,7 @@ export const PlayersList = () => {
           style={{
             textShadow: '1px 1px 1px #000',
           }}
-          onClick={() => setShowPlayer(player)}
+          onClick={() => setShowPlayerNickname(player.nickname)}
         >
           {player.nickname} [{player.id}]
         </Button>
@@ -33,18 +35,17 @@ export const PlayersList = () => {
 
   return (
     <>
-      <Modal opened={showPlayer !== null} onClose={() => setShowPlayer(null)} title={'Player info'} centered>
+      <Modal opened={showPlayerNickname !== null} onClose={() => setShowPlayerNickname(null)} title={'Player info'} centered>
         <Text fw={'bold'}>
-          Nickname:
-          <Text display={'inline'} c={`#${showPlayer?.color.toString(16).slice(0, 6)}`} style={{ textShadow: '1px 1px 1px #000' }}>{showPlayer?.nickname} [{showPlayer?.id}]</Text>
+          Nickname: <Text display={'inline'} c={`#${showPlayerData?.color.toString(16).slice(0, 6)}`} style={{ textShadow: '1px 1px 1px #000' }}>{showPlayerData?.nickname} [{showPlayerData?.id}]</Text>
         </Text>
         <Space h={'xs'} />
-        <Text fw={'bold'}>HP: <Text display={'inline'}>{showPlayer?.health}</Text></Text>
-        <Text fw={'bold'}>ARM: <Text display={'inline'}>{showPlayer?.armor}</Text></Text>
-        <Text fw={'bold'}>Skin: <Text display={'inline'}>{showPlayer?.skin}</Text></Text>
-        <Text fw={'bold'}>Weapon: <Text display={'inline'}>{showPlayer?.weapon}</Text></Text>
+        <Text fw={'bold'}>HP: <Text display={'inline'}>{showPlayerData?.health}</Text></Text>
+        <Text fw={'bold'}>ARM: <Text display={'inline'}>{showPlayerData?.armor}</Text></Text>
+        <Text fw={'bold'}>Skin: <Text display={'inline'}>{showPlayerData?.skin}</Text></Text>
+        <Text fw={'bold'}>Weapon: <Text display={'inline'}>{showPlayerData?.weapon}</Text></Text>
         <Space h={'xs'} />
-        <Text fw={'bold'}>Position: <Text display={'inline'}>{showPlayer?.position.x.toFixed(2)}, {showPlayer?.position.y.toFixed(2)}, {showPlayer?.position.z.toFixed(2)}</Text></Text>
+        <Text fw={'bold'}>Position: <Text display={'inline'}>{showPlayerData?.position.x.toFixed(2)}, {showPlayerData?.position.y.toFixed(2)}, {showPlayerData?.position.z.toFixed(2)}</Text></Text>
                 
       </Modal>
       <Text fw={'bold'}>

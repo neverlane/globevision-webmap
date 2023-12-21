@@ -1,8 +1,10 @@
-import { Flex, Space, useComputedColorScheme, Text } from '@mantine/core';
+import { Flex, Space, Text,useComputedColorScheme } from '@mantine/core';
 import { IconDeviceVisionPro } from '@tabler/icons-react';
+
+import { PlayersList } from '~/components/sidebar/players-list';
+
 import { ColorScheme } from './color-scheme';
 import { Controls } from './controls';
-import { PlayersList } from '~/components/sidebar/players-list';
 
 export const Sidebar = () => {
   const colorScheme = useComputedColorScheme('dark');

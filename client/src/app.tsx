@@ -1,5 +1,6 @@
 import { Flex } from '@mantine/core';
-import { Sidebar, Map } from '~/components';
+
+import { Map, Sidebar } from '~/components';
 
 function App() {
   return (

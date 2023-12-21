@@ -1,4 +1,4 @@
-import { useMantineColorScheme, Select, type MantineColorScheme } from '@mantine/core';
+import { type MantineColorScheme, Select, useMantineColorScheme } from '@mantine/core';
 
 export const ColorScheme = () => {
   const { setColorScheme, colorScheme } = useMantineColorScheme();

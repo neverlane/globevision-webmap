@@ -18,5 +18,6 @@ export interface IPlayer {
 
 export interface IServersListItem {
   name: string;
+  mapType: string;
   index: number;
 }

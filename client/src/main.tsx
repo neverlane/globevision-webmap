@@ -1,10 +1,11 @@
 import '@mantine/core/styles.css';
+import './index.css';
+
+import { createTheme, localStorageColorSchemeManager,MantineProvider } from '@mantine/core';
 import React from 'react';
 import ReactDOM from 'react-dom/client';
 
 import App from './app';
-import './index.css';
-import { MantineProvider, createTheme, localStorageColorSchemeManager } from '@mantine/core';
 
 const colorSchemeManager = localStorageColorSchemeManager({
   key: 'globevision-color-scheme',

@@ -1,6 +1,7 @@
-import { useMemo } from 'react';
 import { Flex, Select, Text } from '@mantine/core';
 import { useUnit } from 'effector-react';
+import { useMemo } from 'react';
+
 import { $currentServer, $serversList, setCurrentServer } from '~/shared';
 
 export const Controls = () => {

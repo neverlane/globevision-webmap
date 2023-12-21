@@ -1,5 +1,6 @@
 import { createEffect, createEvent, createStore, sample } from 'effector';
-import { connectEventSource, disconnectEventSource, playerApi, type IServersListItem } from '~/shared';
+
+import { connectEventSource, disconnectEventSource, type IServersListItem, playerApi } from '~/shared';
 
 export const $serversList = createStore<IServersListItem[]>([]);
 export const $currentServer = createStore<IServersListItem | null>(null);
