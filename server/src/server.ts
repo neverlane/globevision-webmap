@@ -47,7 +47,7 @@ const main = async () => {
         `data: ${JSON.stringify(data)}\n\n`
       );
     
-    reply.raw.setHeader('content-type', 'text/event-stream');
+    reply.raw.setHeader('content-type', 'text/event-stream; charset=utf-8');
     reply.raw.setHeader('cache-control', 'no-cache');
 
     const sendUpdate = () => write('update', serverCache.get(serverIndex) ?? []);

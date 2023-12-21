@@ -1,5 +1,7 @@
 import { createSocket } from 'dgram';
 import { SmartBuffer } from 'smart-buffer';
+import { decode } from 'iconv-lite';
+import { Buffer } from 'buffer';
 
 import { GLOBE_VISION_IP, GLOBE_VISION_PORT } from './envs';
 import { serversList } from './list';
@@ -49,11 +51,15 @@ export const createSocketClient = (index: number) => {
       };
       buffer.readUInt32LE(); // skip quats
       const color = buffer.readUInt32LE();
-      let nickname = '';
       const nicknameBuffer = buffer.readBuffer(20);
+      
+      let nickname = '';
+      
       for (let i = 0; i < nicknameBuffer.length; i++) {
-        if (nicknameBuffer[i] === 0) break;
-        nickname += String.fromCharCode(nicknameBuffer[i]);
+        if (nicknameBuffer[i] === 0) {
+          nickname = decode(Buffer.from(Uint8Array.prototype.slice.call(nicknameBuffer, 0, i)), 'win1251');
+          break;
+        }
       }
       players.push({
         id,
