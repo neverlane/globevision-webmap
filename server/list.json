@@ -1,150 +1,170 @@
 [
   {
-    "name": "Advance RP Red",
-    "index": 0
-  },
-  {
-    "name": "Advance RP Green",
-    "index": 1
-  },
-  {
-    "name": "Advance RP Blue",
-    "index": 2
-  },
-  {
-    "name": "Advance RP Lime",
-    "index": 3
-  },
-  {
-    "name": "Advance RP Chocolate",
-    "index": 4
-  },
-  {
     "name": "Arizona RP Phoenix",
-    "index": 5
+    "map_type": "sa"
   },
   {
     "name": "Arizona RP Tucson",
-    "index": 6
+    "map_type": "sa"
   },
   {
     "name": "Arizona RP Scottdale",
-    "index": 7
+    "map_type": "sa"
   },
   {
     "name": "Arizona RP Chandler",
-    "index": 8
+    "map_type": "sa"
   },
   {
     "name": "Arizona RP Brainburg",
-    "index": 9
+    "map_type": "sa"
   },
   {
     "name": "Arizona RP Saint Rose",
-    "index": 10
+    "map_type": "sa"
   },
   {
     "name": "Arizona RP Mesa",
-    "index": 11
+    "map_type": "sa"
   },
   {
     "name": "Arizona RP Red Rock",
-    "index": 12
+    "map_type": "sa"
   },
   {
     "name": "Arizona RP Yuma",
-    "index": 13
+    "map_type": "sa"
   },
   {
     "name": "Arizona RP Surprise",
-    "index": 14
+    "map_type": "sa"
   },
   {
     "name": "Arizona RP Prescott",
-    "index": 15
+    "map_type": "sa"
   },
   {
     "name": "Arizona RP Glendale",
-    "index": 16
+    "map_type": "sa"
   },
   {
     "name": "Arizona RP Kingman",
-    "index": 17
+    "map_type": "sa"
   },
   {
     "name": "Arizona RP Winslow",
-    "index": 18
+    "map_type": "sa"
   },
   {
     "name": "Arizona RP Payson",
-    "index": 19
+    "map_type": "sa"
   },
   {
     "name": "Arizona RP Gilbert",
-    "index": 20
+    "map_type": "sa"
   },
   {
     "name": "Arizona RP Show-Low",
-    "index": 21
+    "map_type": "sa"
   },
   {
     "name": "Arizona RP Casa Grande",
-    "index": 22
+    "map_type": "sa"
   },
   {
     "name": "Arizona RP Page",
-    "index": 23
+    "map_type": "sa"
   },
   {
     "name": "Arizona RP Sun City",
-    "index": 24
+    "map_type": "sa"
   },
   {
     "name": "Arizona RP Queen Creek",
-    "index": 25
+    "map_type": "sa"
   },
   {
     "name": "Arizona RP Sedona",
-    "index": 26
+    "map_type": "sa"
   },
   {
     "name": "Arizona RP Holiday",
-    "index": 27
+    "map_type": "sa"
   },
   {
     "name": "Arizona RP Wednesday",
-    "index": 28
+    "map_type": "sa"
   },
   {
     "name": "Arizona RP Yava",
-    "index": 29
+    "map_type": "sa"
   },
   {
     "name": "Arizona RP Faraway",
-    "index": 30
+    "map_type": "sa"
   },
   {
     "name": "Arizona RP Bumble Bee",
-    "index": 31
+    "map_type": "sa"
+  },
+  {
+    "name": "Rodina RP Центральный округ",
+    "map_type": "rodina"
+  },
+  {
+    "name": "Rodina RP Южный округ",
+    "map_type": "rodina"
+  },
+  {
+    "name": "Rodina RP Северный округ",
+    "map_type": "rodina"
+  },
+  {
+    "name": "Rodina RP Восточный округ",
+    "map_type": "rodina"
+  },
+  {
+    "name": "Rodina RP Западный округ",
+    "map_type": "rodina"
+  },
+  {
+    "name": "Advance RP Red",
+    "map_type": "sa"
+  },
+  {
+    "name": "Advance RP Green",
+    "map_type": "sa"
+  },
+  {
+    "name": "Advance RP Blue",
+    "map_type": "sa"
+  },
+  {
+    "name": "Advance RP Lime",
+    "map_type": "sa"
+  },
+  {
+    "name": "Advance RP Chocolate",
+    "map_type": "sa"
   },
   {
     "name": "Evolve RP Saint-Louis",
-    "index": 32
+    "map_type": "sa"
   },
   {
     "name": "Evolve RP Cleveland",
-    "index": 33
+    "map_type": "sa"
   },
   {
     "name": "Samp-Rp.Ru Underground",
-    "index": 34
+    "map_type": "sa"
   },
   {
-    "name": "Samp-Rp.Ru Revolution",
-    "index": 35
+    "name": "Evolve RP Revolution",
+    "map_type": "sa"
   },
   {
-    "name": "Samp-Rp.Ru Legacy",
-    "index": 36
+    "name": "Evolve RP Legacy",
+    "map_type": "sa"
   }
 ]
