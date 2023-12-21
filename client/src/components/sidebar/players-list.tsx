@@ -10,10 +10,10 @@ export const PlayersList = () => {
   const colorScheme = useComputedColorScheme('dark');
   
   const [search, setSearch] = useState('');
-  const [showPlayerNickname, setShowPlayerNickname] = useState<string | null>(null);
+  const [showPlayerID, setShowPlayerID] = useState<number | null>(null);
   const [debouncedSearch] = useDebouncedValue(search, 300);
 
-  const showPlayerData = useMemo(() => (players.find((player) => player.nickname === showPlayerNickname)), [players, showPlayerNickname]);
+  const showPlayerData = useMemo(() => (players.find((player) => player.id === showPlayerID)), [players, showPlayerID]);
 
   const playersRows = useMemo(() =>
     players.filter(player => player.nickname.toLowerCase().includes(debouncedSearch.toLowerCase()) || player.id.toString().includes(debouncedSearch)).map((player) => (
@@ -25,7 +25,7 @@ export const PlayersList = () => {
           style={{
             textShadow: '1px 1px 1px #000',
           }}
-          onClick={() => setShowPlayerNickname(player.nickname)}
+          onClick={() => setShowPlayerID(player.id)}
         >
           {player.nickname} [{player.id}]
         </Button>
@@ -35,18 +35,25 @@ export const PlayersList = () => {
 
   return (
     <>
-      <Modal opened={showPlayerNickname !== null} onClose={() => setShowPlayerNickname(null)} title={'Player info'} centered>
-        <Text fw={'bold'}>
-          Nickname: <Text display={'inline'} c={`#${showPlayerData?.color.toString(16).slice(0, 6)}`} style={{ textShadow: '1px 1px 1px #000' }}>{showPlayerData?.nickname} [{showPlayerData?.id}]</Text>
-        </Text>
-        <Space h={'xs'} />
-        <Text fw={'bold'}>HP: <Text display={'inline'}>{showPlayerData?.health}</Text></Text>
-        <Text fw={'bold'}>ARM: <Text display={'inline'}>{showPlayerData?.armor}</Text></Text>
-        <Text fw={'bold'}>Skin: <Text display={'inline'}>{showPlayerData?.skin}</Text></Text>
-        <Text fw={'bold'}>Weapon: <Text display={'inline'}>{showPlayerData?.weapon}</Text></Text>
-        <Space h={'xs'} />
-        <Text fw={'bold'}>Position: <Text display={'inline'}>{showPlayerData?.position.x.toFixed(2)}, {showPlayerData?.position.y.toFixed(2)}, {showPlayerData?.position.z.toFixed(2)}</Text></Text>
-                
+      <Modal opened={showPlayerID !== null} onClose={() => setShowPlayerID(null)} title={'Player info'} centered>
+        {
+          showPlayerData ? <>
+            <Text fw={'bold'}>
+              Nickname: <Text display={'inline'} c={`#${showPlayerData?.color.toString(16).slice(0, 6)}`} style={{ textShadow: '1px 1px 1px #000' }}>{showPlayerData?.nickname} [{showPlayerData?.id}]</Text>
+            </Text>
+            <Space h={'xs'} />
+            <Text fw={'bold'}>HP: <Text display={'inline'}>{showPlayerData?.health}</Text></Text>
+            <Text fw={'bold'}>ARM: <Text display={'inline'}>{showPlayerData?.armor}</Text></Text>
+            <Text fw={'bold'}>Skin: <Text display={'inline'}>{showPlayerData?.skin}</Text></Text>
+            <Text fw={'bold'}>Weapon: <Text display={'inline'}>{showPlayerData?.weapon}</Text></Text>
+            <Space h={'xs'} />
+            <Text fw={'bold'}>Position: <Text display={'inline'}>{showPlayerData?.position.x.toFixed(2)}, {showPlayerData?.position.y.toFixed(2)}, {showPlayerData?.position.z.toFixed(2)}</Text></Text>
+          </> : <>
+            <Text py={'2rem'} size={'1.5rem'} fw={'bold'} ta={'center'}>
+              player offline
+            </Text>
+          </>
+        }
       </Modal>
       <Text fw={'bold'}>
         Players count: <Text display={'inline'}>{players.length}</Text>

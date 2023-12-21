@@ -12,7 +12,7 @@ export const Map = () => {
   const mapRef = useRef<HTMLImageElement>(null);
   const currentServer = useUnit($currentServer);
   const [mapScale, setMapScale] = useState<number>(0);
-  const [selectedNickname, setSelectedNickname] = useState<string | null>(null);
+  const [showPlayerInfoKey, setShowPlayerInfoKey] = useState<string | null>(null);
   const players = useUnit($players);
 
   const convertCoord = (coord: {x: number, y: number}) => ({
@@ -25,10 +25,14 @@ export const Map = () => {
     setMapScale(mapRef.current.height / SA_MAP_WH);
   }, [mapRef?.current?.height]);
 
+  // useEffect(() => {
+  //   setShowPlayerInfoKey(null);
+  // }, [currentServer]);
+
   return (
     <Box pos={'relative'} h={'100%'} style={{ overflow: 'hidden' }}>
       {
-        currentServer && (
+        currentServer !== null && (
           <>
             <Image
               ref={mapRef}
@@ -41,12 +45,13 @@ export const Map = () => {
               {players.map((player) => {
                 const {left, top} = convertCoord(player.position);
                 const color = `#${player.color.toString(16).slice(0, 6)}`;
+                const renderKey = `map-player:${player.nickname}:${player.id}`;
                 return (
-                  <Popover key={`map-player:${player.nickname}:${player.id}`} width={200} position={'bottom'} withArrow shadow={'md'} opened={selectedNickname === player.nickname}>
+                  <Popover key={renderKey} width={200} position={'bottom'} withArrow shadow={'md'} opened={showPlayerInfoKey === renderKey}>
                     <Popover.Target>
                       <span
-                        onMouseEnter={() => setSelectedNickname(player.nickname)}
-                        onMouseLeave={() => setSelectedNickname(null)}
+                        onMouseEnter={() => setShowPlayerInfoKey(renderKey)}
+                        onMouseLeave={() => setShowPlayerInfoKey(null)}
                         style={{
                           display: 'block',
                           position: 'absolute',
