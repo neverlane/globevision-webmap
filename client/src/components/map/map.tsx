@@ -1,89 +1,40 @@
-import { Box, Image, Popover, Space, Text } from '@mantine/core';
+import { Flex } from '@mantine/core';
 import { useUnit } from 'effector-react';
-import { useEffect, useRef, useState } from 'react';
+import { useCallback, useEffect, useRef, useState } from 'react';
 
 import { $currentServer, $players } from '~/shared';
 
-const SA_MAP_WH = 6000;
+import { wrapperStyles } from './map.css';
+import { RenderMap } from './render-map';
 
-const minmax = (min: number, value: number, max: number) => Math.min(Math.max(value, min), max);
+
 
 export const Map = () => {
-  const mapRef = useRef<HTMLImageElement>(null);
+  const boxRef = useRef<HTMLDivElement>(null);
   const currentServer = useUnit($currentServer);
-  const [mapScale, setMapScale] = useState<number>(0);
-  const [showPlayerInfoKey, setShowPlayerInfoKey] = useState<string | null>(null);
+
+  const [mapSize, setMapSize] = useState<number>(0);
+
   const players = useUnit($players);
 
-  const convertCoord = (coord: {x: number, y: number}) => ({
-    left: `${mapScale * minmax(0, coord.x + 3000, SA_MAP_WH)}px`,
-    top: `${mapScale * minmax(0, 3000 - coord.y, SA_MAP_WH)}px`,
-  });
+  const recalculateMap = useCallback(() => {
+    if (!boxRef.current) return;
+    const s = Math.min(boxRef.current.clientWidth * 0.9, 1200);
+    setMapSize(s);
+  }, []);
 
   useEffect(() => {
-    if (!mapRef.current) return;
-    setMapScale(mapRef.current.height / SA_MAP_WH);
-  }, [mapRef?.current?.height]);
+    window.addEventListener('resize', recalculateMap);
+    return () => window.removeEventListener('resize', recalculateMap);
+  }, [recalculateMap]);
 
-  // useEffect(() => {
-  //   setShowPlayerInfoKey(null);
-  // }, [currentServer]);
+  useEffect(() => {
+    recalculateMap();
+  }, [boxRef, recalculateMap]);
 
   return (
-    <Box pos={'relative'} h={'100%'} style={{ overflow: 'hidden' }}>
-      {
-        currentServer !== null && (
-          <>
-            <Image
-              ref={mapRef}
-              h={'100%'}
-              src={`${import.meta.env.BASE_URL}maps/${currentServer?.mapType}.webp`} 
-              alt={'sa map'}
-              style={{aspectRatio: 1}}
-            />
-            <Box>
-              {players.map((player) => {
-                const {left, top} = convertCoord(player.position);
-                const color = `#${player.color.toString(16).slice(0, 6)}`;
-                const renderKey = `map-player:${player.nickname}:${player.id}`;
-                return (
-                  <Popover key={renderKey} width={200} position={'bottom'} withArrow shadow={'md'} opened={showPlayerInfoKey === renderKey}>
-                    <Popover.Target>
-                      <span
-                        onMouseEnter={() => setShowPlayerInfoKey(renderKey)}
-                        onMouseLeave={() => setShowPlayerInfoKey(null)}
-                        style={{
-                          display: 'block',
-                          position: 'absolute',
-                          left,
-                          top,
-                          transform: 'translate(-50%, -50%)',
-                          backgroundColor: color,
-                          border: '1px solid black',
-                          width: '14px',
-                          height: '14px',
-                          borderRadius: '50%' 
-                        }}
-                      />
-                    </Popover.Target>
-                    <Popover.Dropdown style={{ pointerEvents: 'none' }}>
-                      <Text fw={'bold'}>Player info</Text>
-                      <Text c={color} style={{ textShadow: '1px 1px 1px #000' }}>{player.nickname} [{player.id}]</Text>
-                      <Space h={'xs'} />
-                      <Text fw={'bold'}>HP: <Text display={'inline'}>{player.health}</Text></Text>
-                      <Text fw={'bold'}>ARM: <Text display={'inline'}>{player.armor}</Text></Text>
-                      <Text fw={'bold'}>Skin: <Text display={'inline'}>{player.skin}</Text></Text>
-                      <Text fw={'bold'}>Weapon: <Text display={'inline'}>{player.weapon}</Text></Text>
-                      <Space h={'xs'} />
-                      <Text fw={'bold'}>Position: <Text display={'inline'}>{player.position.x.toFixed(2)}, {player.position.y.toFixed(2)}, {player.position.z.toFixed(2)}</Text></Text>
-                    </Popover.Dropdown>
-                  </Popover>
-                );  
-              })}
-            </Box>
-          </>
-        )
-      }
-    </Box>
+    <Flex ref={boxRef} className={wrapperStyles}>
+      {currentServer !== null && <RenderMap size={mapSize} players={players} server={currentServer} />}
+    </Flex>
   );
 };

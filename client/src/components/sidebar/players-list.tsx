@@ -1,13 +1,14 @@
-import { Button, Flex, Input, Modal, ScrollArea, Space, Text, useComputedColorScheme } from '@mantine/core';
+import { Button, Flex, Input, ScrollArea, Space, Text } from '@mantine/core';
 import { useDebouncedValue } from '@mantine/hooks';
 import { useUnit } from 'effector-react';
 import { useMemo, useState } from 'react';
 
-import { $players } from '~/shared';
+import { $players, colorToHex } from '~/shared';
+
+import { PlayerInfoModal } from './player-info-modal';
 
 export const PlayersList = () => {
   const players = useUnit($players);
-  const colorScheme = useComputedColorScheme('dark');
   
   const [search, setSearch] = useState('');
   const [showPlayerID, setShowPlayerID] = useState<number | null>(null);
@@ -17,44 +18,24 @@ export const PlayersList = () => {
 
   const playersRows = useMemo(() =>
     players.filter(player => player.nickname.toLowerCase().includes(debouncedSearch.toLowerCase()) || player.id.toString().includes(debouncedSearch)).map((player) => (
-      <Flex key={`players-list:${player.id}:${player.nickname}`} direction={'column'} align={'center'} w={'100%'} justify={'start'}>
-        <Button
-          bg={colorScheme === 'light' ? 'gray.1' : 'dark.5'} 
-          w={'96%'} fw={'bold'} 
-          c={`#${player.color.toString(16).slice(0, 6)}`} 
-          style={{
-            textShadow: '1px 1px 1px #000',
-          }}
-          onClick={() => setShowPlayerID(player.id)}
-        >
-          {player.nickname} [{player.id}]
-        </Button>
-      </Flex>
+      <Button
+        key={`players-list:${player.id}:${player.nickname}`}
+        variant={'default'} 
+        w={'100%'} fw={'bold'} 
+        c={colorToHex(player.color)} 
+        style={{
+          textShadow: '1px 1px 1px #000',
+        }}
+        onClick={() => setShowPlayerID(player.id)}
+      >
+        {player.nickname} [{player.id}]
+      </Button>
     ))
-  , [players, debouncedSearch, colorScheme]);
+  , [players, debouncedSearch]);
 
   return (
-    <>
-      <Modal opened={showPlayerID !== null} onClose={() => setShowPlayerID(null)} title={'Player info'} centered>
-        {
-          showPlayerData ? <>
-            <Text fw={'bold'}>
-              Nickname: <Text display={'inline'} c={`#${showPlayerData?.color.toString(16).slice(0, 6)}`} style={{ textShadow: '1px 1px 1px #000' }}>{showPlayerData?.nickname} [{showPlayerData?.id}]</Text>
-            </Text>
-            <Space h={'xs'} />
-            <Text fw={'bold'}>HP: <Text display={'inline'}>{showPlayerData?.health}</Text></Text>
-            <Text fw={'bold'}>ARM: <Text display={'inline'}>{showPlayerData?.armor}</Text></Text>
-            <Text fw={'bold'}>Skin: <Text display={'inline'}>{showPlayerData?.skin}</Text></Text>
-            <Text fw={'bold'}>Weapon: <Text display={'inline'}>{showPlayerData?.weapon}</Text></Text>
-            <Space h={'xs'} />
-            <Text fw={'bold'}>Position: <Text display={'inline'}>{showPlayerData?.position.x.toFixed(2)}, {showPlayerData?.position.y.toFixed(2)}, {showPlayerData?.position.z.toFixed(2)}</Text></Text>
-          </> : <>
-            <Text py={'2rem'} size={'1.5rem'} fw={'bold'} ta={'center'}>
-              player offline
-            </Text>
-          </>
-        }
-      </Modal>
+    <Flex w={'100%'} direction={'column'} align={'start'} justify={'start'}>
+      <PlayerInfoModal opened={showPlayerID !== null} onClose={() => setShowPlayerID(null)} data={showPlayerData}/>
       <Text fw={'bold'}>
         Players count: <Text display={'inline'}>{players.length}</Text>
       </Text>
@@ -66,11 +47,11 @@ export const PlayersList = () => {
         onChange={(event) => setSearch(event.currentTarget.value)}
       />
       <Space h={'md'} />
-      <ScrollArea w={'100%'} h={'400px'}>
+      <ScrollArea w={'100%'} h={'200px'}>
         <Flex direction={'column'} align={'start'} justify={'start'} gap={'xs'} py={'md'}>
           {playersRows}
         </Flex>
       </ScrollArea>
-    </>
+    </Flex>
   );
 };

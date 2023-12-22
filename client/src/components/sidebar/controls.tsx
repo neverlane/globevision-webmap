@@ -1,4 +1,4 @@
-import { Flex, Select, Text } from '@mantine/core';
+import { Flex, Select, Space, Text } from '@mantine/core';
 import { useUnit } from 'effector-react';
 import { useMemo } from 'react';
 
@@ -14,6 +14,7 @@ export const Controls = () => {
   return (
     <Flex w={'100%'} direction={'column'} align={'start'} justify={'start'}>
       <Text size={'xl'} fw={'bold'}>Controls</Text>
+      <Space h={'xs'} />
       <Select
         w={'100%'}
         label={'Select server'}
