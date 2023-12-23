@@ -1,7 +1,6 @@
 import { createSocket } from 'dgram';
 import { SmartBuffer } from 'smart-buffer';
 import { decode } from 'iconv-lite';
-import { Buffer } from 'buffer';
 
 import { GLOBE_VISION_IP, GLOBE_VISION_PORT } from './envs';
 import { serversList } from './list';
@@ -33,10 +32,10 @@ export const createSocketClient = (index: number) => {
   const sendPacket = () => socket.send(data);
   socket.on('message', (message) => {
     const buffer = SmartBuffer.fromBuffer(message);
-    const size = buffer.readInt16LE();
+    buffer.readInt16LE();
+    const count = buffer.readUInt16LE();
   
-    const count = (size-1) / 46;
-    if (count % 1 !== 0) return;
+    if (count === 0) return;
     const players: IPlayer[] = [];
   
     for (let i = 0; i < count; ++i) {
@@ -51,16 +50,9 @@ export const createSocketClient = (index: number) => {
       };
       buffer.readUInt32LE(); // skip quats
       const color = buffer.readUInt32LE();
-      const nicknameBuffer = buffer.readBuffer(20);
-      
-      let nickname = '';
-      
-      for (let i = 0; i < nicknameBuffer.length; i++) {
-        if (nicknameBuffer[i] === 0) {
-          nickname = decode(Buffer.from(Uint8Array.prototype.slice.call(nicknameBuffer, 0, i)), 'win1251');
-          break;
-        }
-      }
+      const nicknameLength = buffer.readUInt8();
+      const nickname = decode(buffer.readBuffer(nicknameLength), 'win1251');
+
       players.push({
         id,
         updated: (updHp >> 0) & 1,
